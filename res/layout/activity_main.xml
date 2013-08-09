@@ -27,7 +27,7 @@
         android:layout_marginTop="72dp" >
 
         <ListView
-            android:id="@+id/bt_services"
+            android:id="@+id/bt_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         </ListView>

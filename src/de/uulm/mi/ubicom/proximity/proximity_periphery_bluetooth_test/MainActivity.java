@@ -1,5 +1,6 @@
 package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,13 +10,16 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.bluetooth.*;
 public class MainActivity extends Activity implements BluetoothStateChangeReactor, BluetoothServiceReactor {
 	private BluetoothAdapter bluetooth;
 	private BluetoothStateActor btStateActor;
 	private BluetoothServiceActor btServiceActor;
+	private ArrayAdapter<String> bt_devicesAdapter;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +27,10 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
         setContentView(R.layout.activity_main);
         btStateActor = new BluetoothStateActor(this);
         btServiceActor = new BluetoothServiceActor(this);
-        
-        
+        bt_devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+         
+        ListView btDeviceListView =(ListView) findViewById(R.id.bt_devices);
+        btDeviceListView.setAdapter(bt_devicesAdapter);
     }
     
     @Override
@@ -32,8 +38,6 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     	super.onResume();
       
         btStateActor.register(this);
-        
-       
         btServiceActor.register(this);
         
     	bluetooth = BluetoothAdapter.getDefaultAdapter();
@@ -81,24 +85,20 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 
 	@Override
 	public void onServiceDiscoveryStarted() {
-		Log.d("sd","SD started");
+		Button scanButton = (Button) findViewById(R.id.bt_scan_services);
+		scanButton.setEnabled(false);
 		
 	}
 
 	@Override
 	public void onDeviceFound(BluetoothDevice device) {
-		Log.d("sd","onDF "+device.getName()+" "+device);
 		
+		bt_devicesAdapter.add(device.getName());
 	}
 
 	@Override
 	public void onDeviceDiscoveryFinished(BluetoothDevice[] devices) {
-		synchronized (this) {
-			Log.d("sd","onDDfinished: ");
-			for (BluetoothDevice d:devices){
-				Log.d("sd"," "+d.getName());
-			}
-		}
+		
 		
 	}
 
@@ -115,19 +115,8 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	@Override
 	public void onServiceDiscoveryFinished(
 			ConcurrentHashMap<BluetoothDevice, Vector<String>> devicesWithServices) {
-		synchronized (this) {
-			Log.d("sd","onSDfinished");
-			for (Entry<BluetoothDevice, Vector<String>> entry : devicesWithServices.entrySet()) {
-			    BluetoothDevice device = entry.getKey();
-			    Vector<String> uuid = entry.getValue();
-			    Log.d("sd"," Services for "+device.getName()+":");
-				for (String s:uuid){
-					Log.d("sd","  "+s);
-				}
-			    
-			    
-			}
-		}
+		Button scanButton = (Button) findViewById(R.id.bt_scan_services);
+		scanButton.setEnabled(true);
 		
 	}
     
