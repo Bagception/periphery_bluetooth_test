@@ -36,14 +36,15 @@ public class BTClientActivity extends Activity {
 		deviceNameTextView.setText(device.getName());
 		uuidTextView.setText(uuid.toString());
 		btclient = null;
+		 
 		try {
 			btclient = new BTClient(device, uuid);
-			//btclient.startListeningForIncomingBytes();
+			btclient.startListeningForIncomingBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-
+	
+	
 	}
 	
 

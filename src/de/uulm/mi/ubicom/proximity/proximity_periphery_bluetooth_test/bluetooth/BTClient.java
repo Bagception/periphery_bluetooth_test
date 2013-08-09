@@ -3,6 +3,7 @@ package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.bluetooth
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,14 +17,14 @@ public class BTClient implements Runnable{
 	private BluetoothSocket clientSocket;
 	private final BluetoothDevice device;
 	private final ParcelUuid service;
-    private final InputStream clientSocketInStream;
-    private final OutputStream clientSocketOutStream;
+    private InputStream clientSocketInStream;
+    private OutputStream clientSocketOutStream;
 	
 	public BTClient(BluetoothDevice device, ParcelUuid service) throws IOException {
+		
 		this.device = device;
 		this.service = service;
-		clientSocketInStream = clientSocket.getInputStream();
-		clientSocketOutStream = clientSocket.getOutputStream();
+		
 	}
 	
 	//executes itself in another thread and listens
@@ -41,23 +42,41 @@ public class BTClient implements Runnable{
         try {//cannot throw here of course (the method who called start will already be somewhere else because of the thread
             // Connect the device through the socket. This will block
             // until it succeeds or throws an exception.
-            clientSocket = device.createRfcommSocketToServiceRecord(service.getUuid());
+            //clientSocket = device.createRfcommSocketToServiceRecord(service.getUuid());
+            //clientSocket = device.createInsecureRfcommSocketToServiceRecord(service.getUuid());
+        	clientSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("6ABC1C60-693D-11E1-B86C-0800200C9A66"));
+        	
+        	 
+            Log.d("btSteps","1");
+            Log.d("bt",clientSocket.toString());
+            clientSocketInStream = clientSocket.getInputStream();
+            Log.d("btSteps","2");
+    		clientSocketOutStream = clientSocket.getOutputStream();
+    		Log.d("btSteps","3");
             clientSocket.connect();
+            Log.d("bt","connected");
         } catch (IOException connectException) {
             // Unable to connect; close the socket and get out.
+        	connectException.printStackTrace();
             try {
             	clientSocket.close();
-            } catch (IOException closeException) { }
+            } catch (IOException closeException) {
+            	closeException.printStackTrace();
+            }
             return;
         }
 
         // manage the connection 
         int bytes = 0;
 		while (listening){
+			Log.d("bt","listen");
 			try {
                 // Read from the InputStream
+				Log.d("bt","before read");
                 bytes = clientSocketInStream.read(buffer);
+                Log.d("bt","after read");
                 if (bytes == -1){
+                	Log.d("bt","close");
                 	//connection remotely closed
                 	listening = false;
                 	break;
@@ -70,6 +89,7 @@ public class BTClient implements Runnable{
                  */
                 Log.d("input",((char)bytes)+"");
             } catch (IOException e) {
+            	e.printStackTrace();
                 break;
             }
 		}
