@@ -1,4 +1,4 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.activities;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.adapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;

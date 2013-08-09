@@ -9,6 +9,7 @@ import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.layout;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.menu;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors.BluetoothServiceActor;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors.BluetoothStateActor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.adapter.BluetoothDeviceArrayAdapter;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothServiceReactor;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothStateChangeReactor;
 
@@ -81,7 +82,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     
     
     public void onScan(View v){
-    	Log.d("bt","scanning");
+    	bt_devicesAdapter.clear();
     	bluetooth.startDiscovery();
     }
 
@@ -113,7 +114,6 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	public void onServiceDiscoveryStarted() {
 		Button scanButton = (Button) findViewById(R.id.bt_scan_services);
 		scanButton.setEnabled(false);
-		
 	}
 
 	@Override
@@ -123,18 +123,10 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 
 	@Override
 	public void onDeviceDiscoveryFinished(BluetoothDevice[] devices) {
-		
-		
 	}
 
 	@Override
 	public void onServicesDiscovered(BluetoothDevice device, Vector<String> uuid) {
-		synchronized (this) {
-			Log.d("sd","onServicesDS "+device.getName()+":");
-			for (String s:uuid){
-				Log.d("sd"," "+s);
-			}
-		}
 	}
 
 	@Override
