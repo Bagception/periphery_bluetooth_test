@@ -32,6 +32,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	private BluetoothStateActor btStateActor;
 	private BluetoothServiceActor btServiceActor;
 	private BluetoothDeviceArrayAdapter bt_devicesAdapter;
+	private ConcurrentHashMap<String, BluetoothDevice> devicesUpdated;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,10 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				BluetoothDevice device = bt_devicesAdapter.getItem(arg2);
+				if (devicesUpdated != null && devicesUpdated.get(device.getAddress()) != null){
+					//maybe this is a version with more recent uuids
+					device = devicesUpdated.get(device.getAddress()) ; 
+				}
 				selectDevice(device);
 			}
         	
@@ -121,19 +126,20 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 		bt_devicesAdapter.add(device);
 	}
 
+
+
+
 	@Override
-	public void onDeviceDiscoveryFinished(BluetoothDevice[] devices) {
+	public void onDeviceDiscoveryFinished(BluetoothDevice[] devices,
+			ConcurrentHashMap<String, BluetoothDevice> devicesAsMap) {
+		
+			this.devicesUpdated = devicesAsMap;
+			Button scanButton = (Button) findViewById(R.id.bt_scan_services);
+			scanButton.setEnabled(true);
 	}
 
 	@Override
-	public void onServicesDiscovered(BluetoothDevice device, Vector<String> uuid) {
-	}
-
-	@Override
-	public void onServiceDiscoveryFinished(
-			ConcurrentHashMap<BluetoothDevice, Vector<String>> devicesWithServices) {
-		Button scanButton = (Button) findViewById(R.id.bt_scan_services);
-		scanButton.setEnabled(true);
+	public void onServicesDiscovered(BluetoothDevice device) {
 		
 	}
     

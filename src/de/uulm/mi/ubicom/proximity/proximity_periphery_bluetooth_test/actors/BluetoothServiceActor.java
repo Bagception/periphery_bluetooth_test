@@ -11,16 +11,17 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.ParcelUuid;
 import android.os.Parcelable;
 
-
+//BIG QUESTION HERE:
+//if fetchUuidsWithSdp is done, does it affect the getUuids() from existing devices? (if yes, this would make things a lot easier
 public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReactor>{
 
-	private final ConcurrentHashMap<BluetoothDevice,Vector<String>> devices;
-	private volatile int servicesDiscovered = 0;
+	private final ConcurrentHashMap<String,BluetoothDevice> devices;
 	public BluetoothServiceActor(BluetoothServiceReactor reactor) {
 		super(reactor);
-		devices = new ConcurrentHashMap<BluetoothDevice,Vector<String>>();
+		devices = new ConcurrentHashMap<String,BluetoothDevice>();
 		
 		
 	}
@@ -30,35 +31,24 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	     if(intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
 	    	 //device found
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	    	 if (devices.get(device) != null){
+	    	 if (devices.get(device.getAddress()) != null){
 	    		 //device already discovered
 	    		 return;
 	    	 }
-	    	 devices.put(device, new Vector<String>());
+	    	 devices.put(device.getAddress(),device);
 	    	 device.fetchUuidsWithSdp();
 	    	 reactor.onDeviceFound(device);
 	    	 
 	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
 	    	 //device discovery finished
-	    	 BluetoothDevice[] deviceArray = new BluetoothDevice[devices.keySet().size()];
-	    	 deviceArray = devices.keySet().toArray(deviceArray);
-	    	 reactor.onDeviceDiscoveryFinished(deviceArray);
+	    	 BluetoothDevice[] ldevices = new BluetoothDevice[devices.size()];
+	    	 reactor.onDeviceDiscoveryFinished(devices.values().toArray(ldevices),devices);
 	    	 
 	     }else if(intent.getAction().equals(BluetoothDevice.ACTION_UUID)){
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	    	 Vector<String> uuids = devices.get(device);
-	         Parcelable[] uuidExtra = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-	         if (uuidExtra != null){
-	        	 for (int i=0; i<uuidExtra.length; i++) {
-	  	           uuids.add(uuidExtra[i].toString());
-	  	         }	 
-	         }
-	         reactor.onServicesDiscovered(device, uuids);
-	         servicesDiscovered++;
-	         if (servicesDiscovered==devices.size()){
-	        	 reactor.onServiceDiscoveryFinished(devices);
-	        	 servicesDiscovered = 0;
-	         }
+	    	 devices.put(device.getAddress(), device);
+	         reactor.onServicesDiscovered(device);
+	         
 	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
 	    	 reactor.onServiceDiscoveryStarted();
 	     }
@@ -66,6 +56,8 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	        
 		
 	}
+	
+	
 	
 	public void register(Activity a){
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
