@@ -1,9 +1,10 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.uulm.mi.ubicom.proximity.lib.BroadcastActor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothServiceReactor;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,7 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Parcelable;
-import android.util.Log;
+
 
 public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReactor>{
 

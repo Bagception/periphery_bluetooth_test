@@ -1,25 +1,36 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.activities;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.id;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.layout;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.menu;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors.BluetoothServiceActor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors.BluetoothStateActor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothServiceReactor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothStateChangeReactor;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.bluetooth.*;
+import android.content.Intent;
+
 public class MainActivity extends Activity implements BluetoothStateChangeReactor, BluetoothServiceReactor {
 	private BluetoothAdapter bluetooth;
 	private BluetoothStateActor btStateActor;
 	private BluetoothServiceActor btServiceActor;
-	private ArrayAdapter<String> bt_devicesAdapter;
+	private BluetoothDeviceArrayAdapter bt_devicesAdapter;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +38,19 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
         setContentView(R.layout.activity_main);
         btStateActor = new BluetoothStateActor(this);
         btServiceActor = new BluetoothServiceActor(this);
-        bt_devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        bt_devicesAdapter = new BluetoothDeviceArrayAdapter(this);
          
         ListView btDeviceListView =(ListView) findViewById(R.id.bt_devices);
+        btDeviceListView.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				BluetoothDevice device = bt_devicesAdapter.getItem(arg2);
+				selectDevice(device);
+			}
+        	
+        });
         btDeviceListView.setAdapter(bt_devicesAdapter);
     }
     
@@ -52,6 +73,11 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     	btServiceActor.unregister(this);
     }
     
+    private void selectDevice(BluetoothDevice d){
+    	Intent intent = new Intent(this,ListServices.class);
+    	intent.putExtra("device",d);
+    	startActivity(intent);
+    }
     
     
     public void onScan(View v){
@@ -92,8 +118,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 
 	@Override
 	public void onDeviceFound(BluetoothDevice device) {
-		
-		bt_devicesAdapter.add(device.getName());
+		bt_devicesAdapter.add(device);
 	}
 
 	@Override

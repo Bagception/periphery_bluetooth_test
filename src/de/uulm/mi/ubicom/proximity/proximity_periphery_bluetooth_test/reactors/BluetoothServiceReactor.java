@@ -1,4 +1,4 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;

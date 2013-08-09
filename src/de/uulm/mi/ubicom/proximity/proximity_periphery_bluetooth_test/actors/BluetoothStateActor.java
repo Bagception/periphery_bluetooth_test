@@ -1,6 +1,7 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors;
 
 import de.uulm.mi.ubicom.proximity.lib.BroadcastActor;
+import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors.BluetoothStateChangeReactor;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;

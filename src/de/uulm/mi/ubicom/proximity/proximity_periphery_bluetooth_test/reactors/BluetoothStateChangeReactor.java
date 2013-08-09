@@ -1,4 +1,4 @@
-package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
+package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.reactors;
 
 import de.uulm.mi.ubicom.proximity.lib.Reactor;
 
