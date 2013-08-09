@@ -1,5 +1,6 @@
 package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.actors;
 
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
+import android.util.Log;
 
 //BIG QUESTION HERE:
 //if fetchUuidsWithSdp is done, does it affect the getUuids() from existing devices? (if yes, this would make things a lot easier
@@ -31,18 +33,17 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	     if(intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
 	    	 //device found
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	    	 if (devices.get(device.getAddress()) != null){
-	    		 //device already discovered
-	    		 return;
-	    	 }
-	    	 devices.put(device.getAddress(),device);
-	    	 device.fetchUuidsWithSdp();
-	    	 reactor.onDeviceFound(device);
+	    	 added(device);
 	    	 
 	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
 	    	 //device discovery finished
 	    	 BluetoothDevice[] ldevices = new BluetoothDevice[devices.size()];
-	    	 reactor.onDeviceDiscoveryFinished(devices.values().toArray(ldevices),devices);
+	    	 ldevices = devices.values().toArray(ldevices);
+	    	 for (BluetoothDevice d:ldevices){
+	    		 d.fetchUuidsWithSdp();
+	    	 }
+	    	 reactor.onDeviceDiscoveryFinished(ldevices,devices);
+	    	 
 	    	 
 	     }else if(intent.getAction().equals(BluetoothDevice.ACTION_UUID)){
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -50,14 +51,31 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	         reactor.onServicesDiscovered(device);
 	         
 	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
-	    	 reactor.onServiceDiscoveryStarted();
+	    	 Log.d("bt","dd started recv");
+	    	reactor.onServiceDiscoveryStarted();
+	    	Set<BluetoothDevice> pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+	    	if (pairedDevices.size() > 0) {
+	    	    for (BluetoothDevice device : pairedDevices) {	    	    	
+	   	    	 	added(device);
+	    	    }
+	    	}
 	     }
 	       
 	        
 		
 	}
 	
-	
+	private void added(BluetoothDevice device){
+		if (devices.get(device.getAddress()) != null){
+   		 //device already discovered
+	   		 Log.d("bt","already: "+device.getName());
+	   		 return;
+	   	 }else{
+	   		 Log.d("bt","new : "+device.getName());
+	   	 }
+	   	 devices.put(device.getAddress(),device);
+	   	 reactor.onDeviceFound(device);
+	}
 	
 	public void register(Activity a){
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);

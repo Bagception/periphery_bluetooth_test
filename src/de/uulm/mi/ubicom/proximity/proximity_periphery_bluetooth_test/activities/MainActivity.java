@@ -124,6 +124,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	@Override
 	public void onDeviceFound(BluetoothDevice device) {
 		bt_devicesAdapter.add(device);
+		Log.d("bt","added "+device.getName());
 	}
 
 

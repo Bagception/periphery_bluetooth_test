@@ -38,7 +38,7 @@ public class BTClientActivity extends Activity {
 		btclient = null;
 		try {
 			btclient = new BTClient(device, uuid);
-			btclient.startListeningForIncomingBytes();
+			//btclient.startListeningForIncomingBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

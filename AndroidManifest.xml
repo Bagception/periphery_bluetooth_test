@@ -30,7 +30,7 @@
             android:label="@string/title_activity_list_services" >
         </activity>
         <activity
-            android:name="de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.activities.BTClient"
+            android:name="de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.activities.BTClientActivity"
             android:label="@string/title_activity_btclient" >
         </activity>
     </application>
