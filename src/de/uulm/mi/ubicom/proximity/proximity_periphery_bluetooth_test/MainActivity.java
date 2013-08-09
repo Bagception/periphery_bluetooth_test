@@ -1,6 +1,5 @@
 package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
 
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,12 +21,8 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
         btStateActor = new BluetoothStateActor(this);
-        btStateActor.register(this);
-        
         btServiceActor = new BluetoothServiceActor(this);
-        btServiceActor.register(this);
         
         
     }
@@ -35,6 +30,12 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     @Override
     protected void onResume() {
     	super.onResume();
+      
+        btStateActor.register(this);
+        
+       
+        btServiceActor.register(this);
+        
     	bluetooth = BluetoothAdapter.getDefaultAdapter();
     	onBluetoothEnabledChanged(bluetooth.isEnabled());
     }
@@ -50,6 +51,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     
     
     public void onScan(View v){
+    	Log.d("bt","scanning");
     	bluetooth.startDiscovery();
     }
 
@@ -85,16 +87,16 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 
 	@Override
 	public void onDeviceFound(BluetoothDevice device) {
-		Log.d("sd","D found "+device);
+		Log.d("sd","onDF "+device.getName()+" "+device);
 		
 	}
 
 	@Override
 	public void onDeviceDiscoveryFinished(BluetoothDevice[] devices) {
 		synchronized (this) {
-			Log.d("sd","DD finished: ");
+			Log.d("sd","onDDfinished: ");
 			for (BluetoothDevice d:devices){
-				Log.d("sd"," "+d);
+				Log.d("sd"," "+d.getName());
 			}
 		}
 		
@@ -103,7 +105,7 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	@Override
 	public void onServicesDiscovered(BluetoothDevice device, Vector<String> uuid) {
 		synchronized (this) {
-			Log.d("sd","Services for "+device+":");
+			Log.d("sd","onServicesDS "+device.getName()+":");
 			for (String s:uuid){
 				Log.d("sd"," "+s);
 			}
@@ -114,11 +116,11 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
 	public void onServiceDiscoveryFinished(
 			ConcurrentHashMap<BluetoothDevice, Vector<String>> devicesWithServices) {
 		synchronized (this) {
-			Log.d("sd","SD finished");
+			Log.d("sd","onSDfinished");
 			for (Entry<BluetoothDevice, Vector<String>> entry : devicesWithServices.entrySet()) {
 			    BluetoothDevice device = entry.getKey();
 			    Vector<String> uuid = entry.getValue();
-			    Log.d("sd"," Services for "+device+":");
+			    Log.d("sd"," Services for "+device.getName()+":");
 				for (String s:uuid){
 					Log.d("sd","  "+s);
 				}

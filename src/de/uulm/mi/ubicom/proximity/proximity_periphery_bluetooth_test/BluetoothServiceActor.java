@@ -26,34 +26,34 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
-	     if(intent.equals(BluetoothDevice.ACTION_FOUND)) {
+	     if(intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
 	    	 //device found
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	    	 devices.put(device, new Vector<String>());
-	    	 Log.d("sd","NAME: "+intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_NAME));
 	    	 device.fetchUuidsWithSdp();
 	    	 reactor.onDeviceFound(device);
 	    	 
-	     }else if(intent.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
+	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
 	    	 //device discovery finished
 	    	 BluetoothDevice[] deviceArray = new BluetoothDevice[devices.keySet().size()];
 	    	 deviceArray = devices.keySet().toArray(deviceArray);
 	    	 reactor.onDeviceDiscoveryFinished(deviceArray);
 	    	 
-	     }else if(intent.equals(BluetoothDevice.ACTION_UUID)){
+	     }else if(intent.getAction().equals(BluetoothDevice.ACTION_UUID)){
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	    	 Vector<String> uuids = devices.get(device);
 	         Parcelable[] uuidExtra = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-	         for (int i=0; i<uuidExtra.length; i++) {
-	           uuids.add(uuidExtra[i].toString());
+	         if (uuidExtra != null){
+	        	 for (int i=0; i<uuidExtra.length; i++) {
+	  	           uuids.add(uuidExtra[i].toString());
+	  	         }	 
 	         }
 	         reactor.onServicesDiscovered(device, uuids);
 	         if (servicesDiscovered==devices.size()){
 	        	 reactor.onServiceDiscoveryFinished(devices);
 	         }
 	         servicesDiscovered++;
-	     }else if(intent.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
+	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
 	    	 reactor.onServiceDiscoveryStarted();
 	     }
 	       
