@@ -1,6 +1,5 @@
 package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
 
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,7 +31,7 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	    	 //device found
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 	    	 devices.put(device, new Vector<String>());
-	    	 Log.d("bt","NAME: "+intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_NAME));
+	    	 Log.d("sd","NAME: "+intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_NAME));
 	    	 device.fetchUuidsWithSdp();
 	    	 reactor.onDeviceFound(device);
 	    	 
