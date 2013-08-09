@@ -30,6 +30,10 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	     if(intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
 	    	 //device found
 	    	 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	    	 if (devices.get(device) != null){
+	    		 //device already discovered
+	    		 return;
+	    	 }
 	    	 devices.put(device, new Vector<String>());
 	    	 device.fetchUuidsWithSdp();
 	    	 reactor.onDeviceFound(device);
@@ -50,10 +54,11 @@ public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReacto
 	  	         }	 
 	         }
 	         reactor.onServicesDiscovered(device, uuids);
+	         servicesDiscovered++;
 	         if (servicesDiscovered==devices.size()){
 	        	 reactor.onServiceDiscoveryFinished(devices);
+	        	 servicesDiscovered = 0;
 	         }
-	         servicesDiscovered++;
 	     }else if(intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
 	    	 reactor.onServiceDiscoveryStarted();
 	     }
