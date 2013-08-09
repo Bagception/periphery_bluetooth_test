@@ -3,11 +3,9 @@ package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
 import de.uulm.mi.ubicom.proximity.lib.BroadcastActor;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 public class BluetoothStateActor extends BroadcastActor<BluetoothStateChangeReactor>{
 

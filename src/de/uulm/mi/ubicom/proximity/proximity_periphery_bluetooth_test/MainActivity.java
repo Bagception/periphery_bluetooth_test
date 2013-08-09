@@ -2,28 +2,28 @@ package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.LauncherActivity.IconResizer;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.bluetooth.*;
-import android.content.Intent;
-import android.content.IntentFilter;
-public class MainActivity extends Activity implements BluetoothStateChangeReactor {
+public class MainActivity extends Activity implements BluetoothStateChangeReactor, BluetoothServiceReactor {
 	private BluetoothAdapter bluetooth;
-	private BluetoothStateActor btStateReceiver;
+	private BluetoothStateActor btStateActor;
+	private BluetoothServiceActor btServiceActor;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        btStateReceiver = new BluetoothStateActor(this);
+        btStateActor = new BluetoothStateActor(this);
+        btStateActor.register(this);
+        
+        btServiceActor = new BluetoothServiceActor(this);
+        btServiceActor.register(this);
         
         
-        
-
     }
     
     @Override
@@ -37,7 +37,8 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     @Override
     protected void onDestroy() {
     	super.onDestroy();
-    	this.unregisterReceiver(btStateReceiver);
+    	btStateActor.unregister(this);
+    	btServiceActor.unregister(this);
     }
     
     
@@ -54,6 +55,9 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
         return true;
     }
 
+    
+    //BluetoothStateReactor
+    
 	@Override
 	public void onBluetoothEnabledChanged(boolean isEabled) {
 		Switch bt_enabled_switch = (Switch) findViewById(R.id.bt_enabled_switch);
@@ -61,6 +65,26 @@ public class MainActivity extends Activity implements BluetoothStateChangeReacto
     	
     	Button scanButton = (Button) findViewById(R.id.bt_scan_services);
 		scanButton.setEnabled(isEabled);
+	}
+
+	
+	//BluetoothServiceReactor
+	@Override
+	public void onServiceDiscovered() {
+		
+		
+	}
+
+	@Override
+	public void onServiceDiscoveryFinished() {
+		
+		
+	}
+
+	@Override
+	public void onServiceDiscoveryStarted() {
+	
+		
 	}
     
 
