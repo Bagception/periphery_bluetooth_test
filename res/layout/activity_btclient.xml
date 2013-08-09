@@ -27,4 +27,14 @@
         android:layout_marginTop="19dp"
         android:text="UUID" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/uuidTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:onClick="onSend"
+        android:text="Send" />
+
 </RelativeLayout>

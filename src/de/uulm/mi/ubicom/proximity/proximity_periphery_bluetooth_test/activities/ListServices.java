@@ -49,7 +49,7 @@ public class ListServices extends Activity {
 	}
 	
 	private void uuidSelected(BluetoothDevice device, ParcelUuid uuid){
-    	Intent intent = new Intent(this,BTClient.class);
+    	Intent intent = new Intent(this,BTClientActivity.class);
     	intent.putExtra("device",device);
     	intent.putExtra("uuid",uuid);
 

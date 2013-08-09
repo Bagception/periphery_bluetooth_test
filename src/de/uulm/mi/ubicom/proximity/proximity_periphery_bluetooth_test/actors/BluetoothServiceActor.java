@@ -17,7 +17,7 @@ import android.os.Parcelable;
 public class BluetoothServiceActor extends BroadcastActor<BluetoothServiceReactor>{
 
 	private final ConcurrentHashMap<BluetoothDevice,Vector<String>> devices;
-	private int servicesDiscovered = 0;
+	private volatile int servicesDiscovered = 0;
 	public BluetoothServiceActor(BluetoothServiceReactor reactor) {
 		super(reactor);
 		devices = new ConcurrentHashMap<BluetoothDevice,Vector<String>>();
