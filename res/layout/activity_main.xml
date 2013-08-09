@@ -8,9 +8,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
+    <Button
+        android:id="@+id/bt_scan_services"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignTop="@+id/linearLayout1"
+        android:layout_centerHorizontal="true"
+        android:onClick="onScan"
+        android:text="scan" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="72dp" >
+
+        <ListView
+            android:id="@+id/bt_services"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+
+    </FrameLayout>
+
+    <Switch
+        android:id="@+id/bt_enabled_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/bt_scan_services"
+        android:layout_alignBottom="@+id/bt_scan_services"
+        android:layout_alignParentRight="true"
+        android:checked="false"
+        android:clickable="false"
+        android:text="Bluetooth ist" />
 
 </RelativeLayout>
