@@ -3,6 +3,7 @@ package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.bluetooth
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -42,17 +43,12 @@ public class BTClient implements Runnable{
         try {//cannot throw here of course (the method who called start will already be somewhere else because of the thread
             // Connect the device through the socket. This will block
             // until it succeeds or throws an exception.
-            //clientSocket = device.createRfcommSocketToServiceRecord(service.getUuid());
-            //clientSocket = device.createInsecureRfcommSocketToServiceRecord(service.getUuid());
-        	clientSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("6ABC1C60-693D-11E1-B86C-0800200C9A66"));
-        	
-        	 
-            Log.d("btSteps","1");
+   
+        	clientSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString(service.getUuid().toString().toUpperCase(Locale.GERMANY)));
+
             Log.d("bt",clientSocket.toString());
             clientSocketInStream = clientSocket.getInputStream();
-            Log.d("btSteps","2");
     		clientSocketOutStream = clientSocket.getOutputStream();
-    		Log.d("btSteps","3");
             clientSocket.connect();
             Log.d("bt","connected");
         } catch (IOException connectException) {
