@@ -9,26 +9,29 @@ import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.bluetooth.
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-
+ 
 public class BTClientActivity extends Activity {
 
 	private BTClient btclient;
-	
+	private BluetoothDevice device;
+	private ParcelUuid uuid;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_btclient);
 		
 		Intent parent = getIntent();
-		BluetoothDevice device = parent.getParcelableExtra("device");
-		ParcelUuid uuid = parent.getParcelableExtra("uuid");
-
+		device = parent.getParcelableExtra("device");
+		uuid = parent.getParcelableExtra("uuid");
+		Log.d("bt","device "+device.getName() + " ("+device.toString()+")");
+		Log.d("bt","uuid "+uuid.toString());
 		TextView deviceNameTextView = (TextView) findViewById(R.id.deviceName);
 		TextView uuidTextView  = (TextView) findViewById(R.id.uuidTextView);
 	   	
@@ -36,18 +39,35 @@ public class BTClientActivity extends Activity {
 		deviceNameTextView.setText(device.getName());
 		uuidTextView.setText(uuid.toString());
 		btclient = null;
-		 
+		if (BluetoothAdapter.getDefaultAdapter().isDiscovering()){
+			Log.d("bt", "cancel discovery now");
+			boolean success = BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+			Log.d("bt", "bt discovery off:"+success);
+		}
+		
+		startAndConnectToServer();
+		
+		
+		
+	
+	}
+	
+
+	private void startAndConnectToServer(){
+		Log.d("bt", "starting client now!");
 		try {
+			if (btclient != null){
+				Log.d("bt", "another client instance is active");
+				btclient.cancel();
+			}
 			btclient = new BTClient(device, uuid);
 			btclient.startListeningForIncomingBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	
-	
 	}
 	
-
 	public void onSend(View v){
 		try {
 			btclient.write("Hello");

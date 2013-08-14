@@ -39,7 +39,7 @@ public class BTClient implements Runnable{
     public void run() {
     	 byte[] buffer = new byte[1024];  // buffer store for the stream
         // Cancel discovery because it will slow down the connection.
-        BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+        
         try {//cannot throw here of course (the method who called start will already be somewhere else because of the thread
             // Connect the device through the socket. This will block
             // until it succeeds or throws an exception.
@@ -94,7 +94,7 @@ public class BTClient implements Runnable{
     /** Will cancel an in-progress connection, and close the socket. 
      * @throws IOException */
     public void cancel() throws IOException {
-
+    	listening = false;
         clientSocket.close();
 
     }	
