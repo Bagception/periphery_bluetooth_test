@@ -70,7 +70,7 @@ public class BTClientActivity extends Activity {
 	
 	public void onSend(View v){
 		try {
-			btclient.write("Hello");
+			btclient.write("31:{\"payload\":\"test\",\"cmd\":\"test\"}");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

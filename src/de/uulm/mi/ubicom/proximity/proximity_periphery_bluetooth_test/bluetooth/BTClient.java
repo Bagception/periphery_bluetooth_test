@@ -102,5 +102,6 @@ public class BTClient implements Runnable{
     
     public void write(String s) throws IOException{
     	clientSocketOutStream.write(s.getBytes());
+    	clientSocketOutStream.flush();
     }
 }
