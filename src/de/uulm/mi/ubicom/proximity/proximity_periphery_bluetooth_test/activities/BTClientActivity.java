@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
  
 public class BTClientActivity extends Activity {
@@ -69,9 +70,22 @@ public class BTClientActivity extends Activity {
 	}
 	
 	public void onSend(View v){
+		EditText t = (EditText) findViewById(R.id.toSend);
+		//StringBuilder sb = new StringBuilder();
+		String s = t.getText().toString().length()+":"+t.getText().toString();
+		Log.d("bt","now sending: "+s);
 		try {
-			btclient.write("31:{\"payload\":\"test\",\"cmd\":\"test\"}");
+			btclient.write(s);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void onDisconnectClicked(View v){
+		try {
+			btclient.cancel();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
