@@ -44,7 +44,7 @@ public class BTClient implements Runnable{
             // Connect the device through the socket. This will block
             // until it succeeds or throws an exception.
    
-        	clientSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString(service.getUuid().toString().toUpperCase(Locale.GERMANY)));
+        	clientSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(service.getUuid().toString().toUpperCase(Locale.GERMANY)));
 
             Log.d("bt",clientSocket.toString());
             clientSocketInStream = clientSocket.getInputStream();
@@ -83,7 +83,7 @@ public class BTClient implements Runnable{
                 /*mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                         .sendToTarget();
                  */
-                Log.d("input",((char)bytes)+"");
+                Log.d("input",new String(buffer,0,bytes));
             } catch (IOException e) {
             	e.printStackTrace();
                 break;
