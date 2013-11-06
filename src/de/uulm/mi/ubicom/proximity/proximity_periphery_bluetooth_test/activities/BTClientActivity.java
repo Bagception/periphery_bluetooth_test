@@ -2,6 +2,9 @@ package de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.activitie
 
 import java.io.IOException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.layout;
 import de.uulm.mi.ubicom.proximity.proximity_periphery_bluetooth_test.R.menu;
@@ -67,15 +70,24 @@ public class BTClientActivity extends Activity {
 			e.printStackTrace();
 		}
 	
-	}
+	} 
 	
 	public void onSend(View v){
 		EditText t = (EditText) findViewById(R.id.toSend);
-		//StringBuilder sb = new StringBuilder();
-		String s = t.getText().toString().length()+":"+t.getText().toString();
-		Log.d("bt","now sending: "+s);
+		StringBuilder sb = new StringBuilder();
+		//String s = t.getText().toString().length()+":"+t.getText().toString();
+		JSONObject o = new JSONObject();
 		try {
-			btclient.write(s);
+			o.put("cmd", "msg");
+			o.put("payload", t.getText().toString());
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		sb.append(o.toString().length()+":"+o.toString());
+		Log.d("bt","now sending: "+sb.toString());
+		try {
+			btclient.write(sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
